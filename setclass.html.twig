@@ -1,0 +1,42 @@
+{# -----attributes & class magic --------------------------------------------- #}
+{#
+attributes https://www.drupal.org/node/2513632
+everything can be changed:
+{{ attributes.addClass('rush').removeClass('nickelback').setAttribute() }}
+#}
+
+{# add a class  <div class="my-class"> #}
+<div {{  attributes.addClass('my-class') }}
+
+{# create a var and add that to classes
+detect on first loop and if a class is in attributes
+#}
+{%
+  set class = [
+    'item',
+    'item--' ~ cycle(["green", "gold", "white"], loop.index),
+    loop.first ? 'first-class',
+    item.attribute.hasClass('is-this-class-here') ? 'ok-use-this':'not-there-use-this',
+    isthistrue ? 'nope' : 'yep',
+  ]
+%}
+{# @TODO can hasClass  be used for ex: hasAttribute ? #}
+set classes = [
+  (bundle =='article') and (view_mode=="full") and (field_name=="field_teaser") ? 'hero__text' : '',
+  (bundle =='article') and (view_mode=="full") and (field_name=="field_content") ? 'f-cap' : '',
+  'foo'
+]
+
+{# add the class, and another my-class #}
+<div {{  attributes.addClass('my-class', class) }}
+
+{# addClass #}
+<div {{  attributes.removeClass('nickelback') }}
+<div {{  attributes.removeClass('nickelback').addClass('rush') }}
+
+{# and they can all be combined #}
+<div {{  attributes.addClass('my-class-here', class).removeClass('nope-not-you') }}
+
+{# you can also use attribtes|without(class) & {{ attribtes.class }}  #}
+<div class=”my-class {{ attributes.class }}”{{attributes|without(‘class’) }}></div>
+
