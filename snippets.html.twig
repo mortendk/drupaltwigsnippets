@@ -1,0 +1,228 @@
+{#
+TWIG SNIPPETS 1.0
+ #}
+{#
+a collection of twig snippets for Drupal8
+general twig documentation: http://twig.sensiolabs.org/doc/templates.html
+
+if you wanna digg deep:
+/core/includes/theme.inc
+#}
+
+{# DEBUG #}
+{{ dump(_context|keys) }}
+
+<pre>
+{{ dump(_context|keys) }}
+</pre>
+
+<hr>
+<ol>
+{% for key, value in _context  %}
+<li>{{ key }} </li>
+ {% if loop.index == 11 %}}
+    <pre>{{ dump( value ) }}</pre>
+{% endif %}
+{% endfor %}
+</ol>
+
+
+
+
+{# -----  Variables ----------------------------------------------------------#}
+{# variabels   #}
+{{ variable }}
+{{ variable.drill.into.it }}
+{{ variable.drill.into['#somethingsomething'] }}
+
+{# drill into a template and grap data out of it  bypassing the "wrapper" tempakte
+  you need to fix the <p> etc if its a text field
+  else just create a template like this
+#}
+{{ content.field_teaser.0["#text"] }}
+
+
+{# Filters #}
+{{ variable|filter }}
+{# http://twig.sensiolabs.org/doc/filters/index.html #}
+
+{# Drupal Translate #}
+{{ variable|t }}
+{{ 'string'|t }}
+
+{% trans %}
+  this will be translated with {{ varibles }}
+{% endtrans %}
+
+{% trans %}
+  only one.
+{% plural count %}
+  the count: {{ count }}
+{% endtrans %}
+
+
+{# usefull filters: #}
+{{ a-class-name|clean_class }}
+{{ an-id|clean_id }}
+{{ translate|t }}
+
+{# replace all of this with that #}
+{{ element_id|replace({'this':'that'}) }}
+
+
+
+{# --controls --------------------------------------------------------------- #}
+{% if something %}
+  yo im here {{ var }}
+{% endif %}
+
+{% if something %}
+  this
+{% else %}
+  that
+{% endif %}
+
+{% if something %}
+  this
+{% elseif somethingelse %}
+  that
+{% endif %}
+
+
+{# for loop #}
+{{ items|length }} items.
+{% for item in items %}
+ {% if loop.first %}
+ {# first loop #}
+  {% elseif loop.last %}
+  {# last loop #}
+ {% elseif loop.index == "2" %}
+ {# 2nd loop #}
+ {% elseif loop.revindex == "2" %}
+  {# 2nd last reverse counted #}
+   {% else %}
+ {# default #}
+ {% endif %}
+ {% endfor %}
+
+{# -----attributes & class magic --------------------------------------------- #}
+{#
+attributes https://www.drupal.org/node/2513632
+everything can be changed:
+{{ attributes.addClass('rush').removeClass('nickelback').setAttribute() }}
+#}
+
+{# add a class  <div class="my-class"> #}
+<div {{  attributes.addClass('my-class') }}
+
+{# create a var and add that to classes
+detect on first loop and if a class is in attributes
+#}
+{%
+  set class = [
+    'item',
+    'item--' ~ cycle(["green", "gold", "white"], loop.index),
+    loop.first ? 'first-class',
+    item.attribute.hasClass('is-this-class-here') ? 'ok-use-this':'not-there-use-this',
+    isthistrue ? 'nope' : 'yep',
+  ]
+%}
+{# @TODO can hasClass  be used for ex: hasAttribute ? #}
+set classes = [
+  (bundle =='article') and (view_mode=="full") and (field_name=="field_teaser") ? 'hero__text' : '',
+  (bundle =='article') and (view_mode=="full") and (field_name=="field_content") ? 'f-cap' : '',
+  'foo'
+]
+
+{# add the class, and another my-class #}
+<div {{  attributes.addClass('my-class', class) }}
+
+{# addClass #}
+<div {{  attributes.removeClass('nickelback') }}
+<div {{  attributes.removeClass('nickelback').addClass('rush') }}
+
+{# and they can all be combined #}
+<div {{  attributes.addClass('my-class-here', class).removeClass('nope-not-you') }}
+
+{# you can also use attribtes|without(class) & {{ attribtes.class }}  #}
+<div class=”my-class {{ attributes.class }}”{{attributes|without(‘class’) }}></div>
+
+{# ----- Link  -------------------------------------------- #}
+{# add a class to a link #}
+{{ link(item.title, item.url, { 'class':['foo', 'bar', 'baz']} ) }}
+.setAttribute('id', 'top')
+
+
+
+
+
+{# ----- set / remove attributes  -------------------------------------------- #}
+{{ attributes.setAttribute('id', 'my-id') }}>
+
+{{ attributes.removeAttribute('id') }}
+
+<img {% set image = 'https://www.drupal.org/files/powered-blue-135x42.png' %}>
+<img setAttribute('src', image) }}>
+
+{# ----------- give fiedls more brains -------------------------------------- #}
+
+template suggestions:
+basetheme define first so if it loads a template name suggestions thats "higer"
+in the chain that will "override" your template.
+ex:
+x field--node--uid.html.twig (gets loaded in stable)
+* field--uid.html.twig' (overwrites this template even if its in your theme)
+
+{#  use of include #}
+{% include '@vanilla/foo.html.twig' %}
+
+
+{# -----include stuff ------------------------------------------------------ #}
+{% include active_theme_path() ~ '/icons/icon.svg' %}
+
+
+{# --- attach a library  #}
+{{ attach_library(active_theme()~'/thenameofthelibrary') }}
+
+
+{# using filter  #}
+{{ item.content['#text']|striptags }}
+
+
+{# first letter #}
+{{ item.content['#title']|slice(0,1) }}
+
+{# include svg  #}
+{% include active_theme_path() ~ '/icons/foobar.svg' %}
+
+
+{# search for stuff  #}
+{% if ‘stuff' in ‘i do twig stuff in drupal ’ %}
+{% endif %}
+
+
+{# links #}
+{{ link(item.title, item.url, { 'class':['foo', 'bar', 'baz']} ) }}
+
+{{ file_url(node.field_example_image.entity.uri.value) }}
+
+
+{# Link to frontpage view. #}
+<a href="{{ path('view.frontpage') }}">{{ 'View all content'|t }}</a>
+
+{# Link to user entity/profile page. #}
+<a href="{{ path('entity.user.canonical', {'user': user.id}) }}">{{ 'View user profile'|t }}</a>
+
+{# Link to node page. #}
+<a href="{{ path('entity.node.canonical', {'node': node.id}) }}">{{ 'View node page'|t }}</a>
+
+
+{# test if a varialbe exist  #}
+
+{{ var|render }}
+
+
+{{ content.field_teaser.0['#text']|striptags|replace({'&amp;': '&', '&nbsp;': ' '}) }}
+
+
+item.content['#url'].getUri|replace({'http://': '', 'https://': ''})
