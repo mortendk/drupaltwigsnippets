@@ -1,0 +1,27 @@
+{#
+TWIG SNIPPETS 1.0
+ #}
+{#
+a collection of twig snippets for Drupal8
+general twig documentation: http://twig.sensiolabs.org/doc/templates.html
+if you wanna digg deep:
+/core/includes/theme.inc
+#}
+
+{# DEBUG #}
+{{ dump(_context|keys) }}
+
+<pre>
+{{ dump(_context|keys) }}
+</pre>
+
+<hr>
+<ol>
+{% for key, value in _context  %}
+<li>{{ key }} </li>
+ {% if loop.index == 11 %}}
+    <pre>{{ dump( value ) }}</pre>
+{% endif %}
+{% endfor %}
+</ol>
+
