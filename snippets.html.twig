@@ -41,6 +41,8 @@ if you wanna digg deep:
 #}
 {{ content.field_teaser.0["#text"] }}
 
+{# clean print of a fields data #}
+{{ content.field_foobar.0|render()|striptags  }}
 
 {# Filters #}
 {{ variable|filter }}
