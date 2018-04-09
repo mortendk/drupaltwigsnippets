@@ -154,7 +154,8 @@ set classes = [
 {{ link(item.title, item.url, { 'class':['foo', 'bar', 'baz']} ) }}
 .setAttribute('id', 'top')
 
-
+{# Link to a node #}
+<a href="{{ path('entity.node.canonical', {'node': node.id}) }}"> link </a>
 
 
 
