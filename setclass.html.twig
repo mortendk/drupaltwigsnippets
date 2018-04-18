@@ -40,3 +40,20 @@ set classes = [
 {# you can also use attribtes|without(class) & {{ attribtes.class }}  #}
 <div class=”my-class {{ attributes.class }}”{{attributes|without(‘class’) }}></div>
 
+
+
+
+create attribute 
+{% set titleattribute = create_attribute() %}
+{%
+  set titleclass = [
+    'foo',
+    'icon',
+    'icon--text',
+    'icon--medium',
+    content.field_icon.0|render() ? 'icon--' ~  content.field_icon.0|render()|striptags|clean_class
+  ]
+%}
+
+
+<h2 {{ titleattribute.addClass(titleclass) }} >
