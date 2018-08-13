@@ -235,3 +235,29 @@ item.content['#url'].getUri|replace({'http://': '', 'https://': ''})
 
 length of attributes value 
 {{ attributes.value|render()|length }}
+
+
+{# ----- Views ------------------------------------------------------ #}
+
+[base template name]--[view machine name]--[view display id].html.twig
+[base template name]--[view machine name]--[view display type].html.twig
+[base template name]--[view display type].html.twig
+[base template name]--[view machine name].html.twig
+[base template name].html.twig
+
+View, named foobar. Style: unformatted. Row style: Fields. Display: Page.
+
+views-view--foobar--page.html.twig
+views-view--page.html.twig
+views-view--foobar.html.twig
+views-view.html.twig
+
+views-view-unformatted--foobar--page.html.twig
+views-view-unformatted--page.html.twig
+views-view-unformatted--foobar.html.twig
+views-view-unformatted.html.twig
+
+views-view-fields--foobar--page.html.twig
+views-view-fields--page.html.twig
+views-view-fields--foobar.html.twig
+views-view-fields.html.twig
